@@ -1,4 +1,6 @@
 from flight_environment import FlightEnvironment
+from path_planner import AStarPlanner
+from trajectory_generator import TrajectoryGenerator
 
 env = FlightEnvironment(50)
 start = (1,2,0)
@@ -13,7 +15,8 @@ goal = (18,18,3)
 #   - column 3 contains the z-coordinates of all path points
 # This `path` array will be provided to the `env` object for visualization.
 
-path = [[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
+planner = AStarPlanner(env, resolution=0.5)
+path = planner.plan(start, goal)
 
 # --------------------------------------------------------------------------------------------------- #
 
@@ -34,8 +37,10 @@ env.plot_cylinders(path)
 #   points on the same figure to clearly show how the continuous trajectory
 #   follows these path points.
 
-
-
+if path is not None:
+    traj_gen = TrajectoryGenerator(path)
+    t_fine, trajectory = traj_gen.generate(num_points=1000)
+    traj_gen.plot_trajectory(t_fine, trajectory)
 
 # --------------------------------------------------------------------------------------------------- #
 
