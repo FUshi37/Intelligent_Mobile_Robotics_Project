@@ -1,38 +1,62 @@
 from flight_environment import FlightEnvironment
+from path_planner import plan_path
+from trajectory_generator import generate_smooth_trajectory
+import time
 
+# 创建飞行环境
 env = FlightEnvironment(50)
-start = (1,2,0)
-goal = (18,18,3)
+start = (1, 2, 0)
+goal = (18, 18, 3)
+
+print("="*60)
+print("    智能移动机器人项目 - RRT路径规划")
+print("="*60)
+print(f"环境大小: {env.env_width} x {env.env_length} x {env.env_height}")
+print(f"障碍物数量: {len(env.cylinders)}")
+print(f"起点: {start}")
+print(f"终点: {goal}")
+print()
 
 # --------------------------------------------------------------------------------------------------- #
-# Call your path planning algorithm here. 
-# The planner should return a collision-free path and store it in the variable `path`. 
-# `path` must be an N×3 numpy array, where:
-#   - column 1 contains the x-coordinates of all path points
-#   - column 2 contains the y-coordinates of all path points
-#   - column 3 contains the z-coordinates of all path points
-# This `path` array will be provided to the `env` object for visualization.
+# 路径规划阶段
+# 使用RRT算法规划从起点到终点的无碰撞路径
 
-path = [[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
+print("开始路径规划...")
+start_time = time.time()
+
+path = plan_path(env, start, goal)
+
+planning_time = time.time() - start_time
+
+if path is None:
+    print("路径规划失败！无法找到从起点到终点的可行路径。")
+    print("可能的原因:")
+    print("1. 环境中的障碍物过多")
+    print("2. 起点或终点在障碍物内")
+    print("3. RRT参数需要调整")
+    exit(1)
+
+print(f"路径规划成功！用时: {planning_time:.2f}秒")
+print(f"路径点数量: {len(path)}")
+print()
 
 # --------------------------------------------------------------------------------------------------- #
 
 
+# 3D路径可视化
+print("生成3D路径可视化...")
 env.plot_cylinders(path)
 
 
 # --------------------------------------------------------------------------------------------------- #
-#   Call your trajectory planning algorithm here. The algorithm should
-#   generate a smooth trajectory that passes through all the previously
-#   planned path points.
-#
-#   After generating the trajectory, plot it in a new figure.
-#   The figure should contain three subplots showing the time histories of
-#   x, y, and z respectively, where the horizontal axis represents time (in seconds).
-#
-#   Additionally, you must also plot the previously planned discrete path
-#   points on the same figure to clearly show how the continuous trajectory
-#   follows these path points.
+# 轨迹生成阶段
+# 生成通过所有路径点的平滑轨迹
+
+print("开始轨迹生成...")
+trajectory_gen = generate_smooth_trajectory(path, total_time=12.0)
+
+print("生成轨迹可视化...")
+trajectory_gen.plot_trajectory()
 
 
 
