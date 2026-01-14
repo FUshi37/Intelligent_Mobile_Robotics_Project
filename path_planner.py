@@ -31,7 +31,7 @@ class AStarPlanner:
     def get_neighbors(self, current):
         """Find non-colliding and within-boundary neighbors."""
         neighbors = []
-        # 26-connectivity in 3D
+        
         for dx in [-self.res, 0, self.res]:
             for dy in [-self.res, 0, self.res]:
                 for dz in [-self.res, 0, self.res]:
@@ -57,7 +57,6 @@ class AStarPlanner:
         start_node = tuple(round(x, 2) for x in start)
         goal_node = tuple(round(x, 2) for x in goal)
 
-        # open_list stores (f_score, node)
         open_list = []
         heapq.heappush(open_list, (0, start_node))
         
@@ -68,9 +67,7 @@ class AStarPlanner:
         while open_list:
             _, current = heapq.heappop(open_list)
 
-            # Check if close enough to goal
             if self.heuristic(current, goal_node) < self.res:
-                # Reconstruct path
                 path = [goal_node]
                 while current in came_from:
                     path.append(current)
@@ -79,7 +76,6 @@ class AStarPlanner:
                 return np.array(path[::-1])
 
             for neighbor in self.get_neighbors(current):
-                # Assume cost between adjacent nodes is their Euclidean distance
                 tentative_g_score = g_score[current] + self.heuristic(current, neighbor)
                 
                 if neighbor not in g_score or tentative_g_score < g_score[neighbor]:

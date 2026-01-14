@@ -62,30 +62,25 @@ class TrajectoryGenerator:
         """
         fig, axs = plt.subplots(3, 1, figsize=(12, 9), sharex=True)
         
-        # 使用更美观的配色方案
-        colors = ['#E74C3C', '#2ECC71', '#3498DB']  # 红色、绿色、蓝色
+        colors = ['#E74C3C', '#2ECC71', '#3498DB']
         labels = ['x (m)', 'y (m)', 'z (m)']
         titles = ['X-axis Position', 'Y-axis Position', 'Z-axis Position']
         
         for i in range(3):
-            # 绘制平滑轨迹曲线
             axs[i].plot(t_fine, trajectory[:, i], color=colors[i], 
                        linewidth=2.5, label='Smooth Trajectory', alpha=0.9)
             
-            # 绘制原始路径点 - 使用更美观的样式
             axs[i].scatter(self.t, self.path[:, i], 
                           c=colors[i], s=80, marker='o', 
                           edgecolors='white', linewidths=2,
                           label='Path Points', zorder=5, alpha=0.8)
             
-            # 美化坐标轴
             axs[i].set_ylabel(labels[i], fontsize=13, fontweight='bold')
             axs[i].set_title(titles[i], fontsize=11, pad=10)
             axs[i].legend(loc='best', framealpha=0.95, fontsize=10)
             axs[i].grid(True, alpha=0.25, linestyle='--', linewidth=0.8)
             axs[i].set_facecolor('#F8F9FA')
             
-            # 添加轴的边框样式
             for spine in axs[i].spines.values():
                 spine.set_linewidth(1.2)
                 spine.set_color('#CCCCCC')
